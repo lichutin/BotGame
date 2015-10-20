@@ -6,7 +6,6 @@ require.config({
 });
 
 require(['app'], function (app) {
-    console.log('hello from app', app.hello());
 });
 
 
