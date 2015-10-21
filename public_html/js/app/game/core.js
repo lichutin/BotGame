@@ -125,16 +125,16 @@ define(['jquery'], function ($) {
                 fire(position.x + player.size / 2, position.y + player.size / 2, target.x + enemy.size / 2, target.y + enemy.size / 2);
             },
             moveUp: function () {
-                move(1);
+                move("up");
             },
             moveDown: function () {
-                move(2);
+                move("down");
             },
             moveLeft: function () {
-                move(3);
+                move("left");
             },
             moveRight: function () {
-                move(4);
+                move("right");
             }
         };
         var move = function (to) {
@@ -144,25 +144,25 @@ define(['jquery'], function ($) {
             var target = enemy.getPosition();
 
             switch (to) {
-                case 1:
+                case "up":
                     position.y -= 50;
                     if (position.x === target.x && position.y === target.y) {
                         position.y += 50;
                     }
                     break;
-                case 2:
+                case "down":
                     position.y += 50;
                     if (position.x === target.x && position.y === target.y) {
                         position.y -= 50;
                     }
                     break;
-                case 3:
+                case "left":
                     position.x -= 50;
                     if (position.x === target.x && position.y === target.y) {
                         position.x += 50;
                     }
                     break;
-                case 4:
+                case "right":
                     position.x += 50;
                     if (position.x === target.x && position.y === target.y) {
                         position.x -= 50;
