@@ -1,41 +1,47 @@
 define('app', ['jquery', 'game/core'], function ($, core) {
-    var a = 2;
-
     var app = {};
 
-    var AddPlayer = function (info) {
+    var addPlayer = function (info) {
         var Player = {name: info.name, setControl: function (control) {
-                $(document).on('keydown', function (e) {
-                    var event = window.event ? window.event : e;
-                    console.log("event.keyCode = " + event.keyCode);
-                    switch (event.keyCode)
-                    {
-                        case info.control.fire:
-                            control.Fire();
-                            break;
-                        case info.control.left:
-                            control.moveLeft();
-                            break;
-                        case info.control.up:
-                            control.moveUp();
-                            break;
-                        case info.control.right:
-                            control.moveRight();
-                            break;
-                        case info.control.down:
-                            control.moveDown();
-                            break;
-                        default:
-                            break;
-                    }
-                });
-            }};
+
+                if (info.bot) {
+//                  ...
+                }
+                else {
+                    $(document).on('keydown', function (e) {
+                        var event = window.event ? window.event : e;
+                        console.log("event.keyCode = " + event.keyCode);
+                        switch (event.keyCode)
+                        {
+                            case info.control.fire:
+                                control.Fire();
+                                break;
+                            case info.control.left:
+                                control.moveLeft();
+                                break;
+                            case info.control.up:
+                                control.moveUp();
+                                break;
+                            case info.control.right:
+                                control.moveRight();
+                                break;
+                            case info.control.down:
+                                control.moveDown();
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+                }
+            }
+        };
         var id = core.setPlayer(Player);
         console.log('new player', Player.name, 'id', id);
     };
 
 
-    var yurii = {
+    var player0 = {
+        botOrNot: false,
         name: "Yurii",
         control: {
             fire: 96,
@@ -45,7 +51,8 @@ define('app', ['jquery', 'game/core'], function ($, core) {
             right: 39
         }
     };
-    var artik = {
+    var player1 = {
+        botOrNot: false,
         name: "Artik",
         control: {
             fire: 32,
@@ -56,8 +63,8 @@ define('app', ['jquery', 'game/core'], function ($, core) {
         }
     };
 
-    AddPlayer(yurii);
-    AddPlayer(artik);
+    addPlayer(player0);
+    addPlayer(player1);
 
     return app;
 });

@@ -19,7 +19,8 @@ define(['jquery'], function ($) {
 
     var drawPlayer = function (player)
     {
-        var gamer = $("<div />").addClass("gamer").attr("id", "player-"+ player.id).text("Player #"+ player.id).css("background", colors[player.id]);
+        var gamer = $("<div />").addClass("gamer").attr("id", "player-"+ player.id)
+                .text("Player #"+ player.id).css("background", colors[player.id]);
         $('.battlefield').append(gamer);
     };
 
