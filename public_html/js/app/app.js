@@ -1,42 +1,53 @@
 define('app', ['jquery', 'game/core'], function ($, core) {
     var app = {};
 
-    var addPlayer = function (info) {
-        var Player = {name: info.name, setControl: function (control) {
 
+
+    var addPlayer = function (info) {
+
+        var player = {name: info.name, setControl: function (control) {
                 if (info.bot) {
 //                  ...
                 }
                 else {
+                    var keys = [];
+
+
+                    $(document).on('keyup', function (e) {
+                        var event = window.event ? window.event : e;
+                        keys[event.keyCode] = false;
+                    });
+                    
+                    var handle = function () {
+                        if (keys[info.control.fire])
+                            control.fire();
+
+                        if (keys[info.control.left])
+                            control.moveLeft();
+
+                        if (keys[info.control.up])
+                            control.moveUp();
+
+                        if (keys[info.control.right])
+                            control.moveRight();
+
+                        if (keys[ info.control.down])
+                            control.moveDown();
+                    };
+
                     $(document).on('keydown', function (e) {
                         var event = window.event ? window.event : e;
-                        console.log("event.keyCode = " + event.keyCode);
-                        switch (event.keyCode)
-                        {
-                            case info.control.fire:
-                                control.Fire();
-                                break;
-                            case info.control.left:
-                                control.moveLeft();
-                                break;
-                            case info.control.up:
-                                control.moveUp();
-                                break;
-                            case info.control.right:
-                                control.moveRight();
-                                break;
-                            case info.control.down:
-                                control.moveDown();
-                                break;
-                            default:
-                                break;
-                        }
+                        keys[event.keyCode] = true;
+
+
+                        handle();
+
                     });
                 }
             }
         };
-        var id = core.setPlayer(Player);
-        console.log('new player', Player.name, 'id', id);
+        var id = core.setPlayer(player);
+        console.log('new player', player.name, 'id', id);
     };
 
 
