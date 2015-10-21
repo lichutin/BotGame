@@ -17,7 +17,7 @@ define('app', ['jquery', 'game/core'], function ($, core) {
                         var event = window.event ? window.event : e;
                         keys[event.keyCode] = false;
                     });
-                    
+
                     var handle = function () {
                         if (keys[info.control.fire])
                             control.fire();

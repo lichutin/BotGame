@@ -11,6 +11,8 @@ define(['jquery'], function ($) {
         var id = players.indexOf(player);
         player.id = id;
 
+        player.score = 0;
+
         setControl(player);
 
         drawPlayer(player);
@@ -24,7 +26,11 @@ define(['jquery'], function ($) {
         var gamer = $("<div />").addClass("gamer").attr("id", "player-" + player.id)
                 .text(player.name).css("background", colors[player.id]);
 
+        var score = $("<div />").addClass("score").text(player.name + ": ");
+        var label = $("<label />").attr("id", "score-" + player.id).text("0");
+        score.append(label);
         $('.battlefield').append(gamer);
+        $(".score-table").append(score);
     };
 
     var setControl = function (player)
@@ -60,7 +66,7 @@ define(['jquery'], function ($) {
             var position = {y: fromY, x: fromX};
             var bullet = $("<div />").addClass("bullet").attr('data-player', player.id).css({top: position.y, left: position.x, 'background': colors[player.id]}).appendTo($('.battlefield'));
 
-            var speed = 5;
+            var speed = 25;
 
             var deltaX = (toX - fromX);
             var deltaY = (toY - fromY);
@@ -81,9 +87,11 @@ define(['jquery'], function ($) {
 
                 bullet.css({top: position.y, left: position.x});
 
-                if (hitTest())
+                if (hitTest()) {
                     killBullet();
-
+                    player.score++;
+                    $("#score-" + player.id).text(player.score);
+                }
                 if (!checkBullet())
                     killBullet();
             }, 50);

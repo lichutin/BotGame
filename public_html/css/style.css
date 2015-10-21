@@ -1,3 +1,6 @@
+*{
+    box-sizing: border-box;
+}
 body{
     background: #dedede;
 }
@@ -10,7 +13,6 @@ body{
     left: 0px;
     text-align: center;
     padding: 15px 0;
-    box-sizing: border-box;
 }
 .bullet{
     margin: -5px 0 0 -5px;
@@ -31,4 +33,15 @@ body{
     top:50%;
     left:50%;
     margin: -250px 0 0 -250px;
+}
+.score-table{
+    position: absolute;
+    width: 130px;
+    height: 100%;
+    top:0px;
+    left:100%;
+    padding: 15px;
+}
+.score-table .score{
+    display: block;
 }
