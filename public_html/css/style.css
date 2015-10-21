@@ -9,6 +9,8 @@ body{
     top: 0px;
     left: 0px;
     text-align: center;
+    padding: 15px 0;
+    box-sizing: border-box;
 }
 .bullet{
     position:absolute;
