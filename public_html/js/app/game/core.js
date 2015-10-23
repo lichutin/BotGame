@@ -72,7 +72,7 @@ define(['jquery', 'game/draw', 'game/base'], function (jq, draw, base) {
             var fire = function (fromX, fromY, toX, toY)
             {
                 var position = {yCur: fromY, xCur: fromX};
-                var target = {y: toY, x: toX};
+                var target = {yCur: toY, xCur: toX};
 
                 var bullet = createBullet({pid: player.id, position: position, target: target});
                 bullet.fire();
@@ -167,8 +167,8 @@ define(['jquery', 'game/draw', 'game/base'], function (jq, draw, base) {
             draw.bullet(bullet);
 
             var speed = 25;
-            var deltaX = (bullet.target.xCur - bullet.position.x);
-            var deltaY = (bullet.target.yCur - bullet.position.y);
+            var deltaX = (bullet.target.xCur - bullet.position.xCur);
+            var deltaY = (bullet.target.yCur - bullet.position.yCur);
             var long = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
             var k = 0;
             if (long != 0)

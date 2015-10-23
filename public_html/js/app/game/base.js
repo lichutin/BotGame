@@ -14,7 +14,10 @@ define([], function () {
     };
 
     baseObject.prototype.hitTest = function (anotherObject) {
-        //по ходу, пока не работает
+        console.log('hit');
+        console.log(this);
+        console.log(anotherObject);
+        //по oходу, пока не работает
         var deltaX = anotherObject.position.xCur - this.position.xCur;
         var deltaY = anotherObject.position.yCur - this.position.yCur;
 
