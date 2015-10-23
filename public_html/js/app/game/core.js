@@ -47,7 +47,6 @@ define(['jquery', 'game/draw', 'game/base'], function (jq, draw, base) {
 
         var setControl = function (player)
         {
-            //продолжить работу надо здесь (отрисоку в draw, остальную логику можно тут оставить)
             var apply = function () {
                 if (player.position.xCur < 500 && player.position.yCur < 500 && player.position.xCur >= 0 && player.position.yCur >= 0) {
                     // draw.player(player);
