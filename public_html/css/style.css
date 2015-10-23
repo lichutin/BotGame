@@ -7,8 +7,8 @@ body{
 .gamer{
     position:absolute;
     background-color: #f00;
-    width: 50px;
-    height: 50px;
+/*    width: 50px;
+    height: 50px;*/
     top: 0px;
     left: 0px;
     text-align: center;
@@ -19,8 +19,8 @@ body{
     margin: -5px 0 0 -5px;
     position:absolute;
     background-color: #0f0;
-    width: 10px;
-    height: 10px;
+/*    width: 10px;
+    height: 10px;*/
     top: 0px;
     left: 0px;
     border-radius: 50%;

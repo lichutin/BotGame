@@ -1,180 +1,232 @@
-define(['jquery'], function ($) {
+define(['jquery', 'game/draw', 'game/base'], function (jq, draw, base) {
     'use strict';
-    var colors = ["#f00", "#0f0", "#00f", "#fa0"];
-    var defaultcoords = [
-        {x: 0, y: 0},
-        {x: 450, y: 450},
-        {x: 450, y: 0},
-        {x: 0, y: 450}
+
+    var gameObjects = [];
+
+    var gameTypes = {
+        player: 1,
+        bullet: 2
+    };
+
+    var defaultCoords = [
+        {xCur: 0, yCur: 0, xNext: 0, yNext: 0},
+        {xCur: 450, yCur: 450, xNext: 0, yNext: 0},
+        {xCur: 450, yCur: 0, xNext: 0, yNext: 0},
+        {xCur: 0, yCur: 450, xNext: 0, yNext: 0}
     ];
 
-    var players = [];
-    var setPlayer = function (player)
+    var createObject = function (obj)
     {
-        players.push(player);
-        var id = players.indexOf(player);
-        player.id = id;
-        player.score = 0;
-        setControl(player);
-        drawPlayer(player);
-        return players.indexOf(player);
+        gameObjects.push(obj);
+        obj.id = gameObjects.indexOf(obj);
+        return obj.id;
     };
-    var drawPlayer = function (player)
+
+    var getPlayer = function (id)
     {
-        var pid = player.id;
-        player.size = 50;
-        var gamer = $("<div />").addClass("gamer").attr("id", "player-" + pid).text(player.name)
-                .css({
-                    "background": colors[pid],
-                    "top": defaultcoords[pid].x,
-                    "left": defaultcoords[pid].y
-                });
-        var score = $("<div />").addClass("score").text(player.name + ": ");
-        var label = $("<label />").attr("id", "score-" + pid).text("0");
-        score.append(label);
-        $('.battlefield').append(gamer);
-        $(".score-table").append(score);
+        return gameObjects.find(function (item) {
+            return item.type === gameTypes.player && item.id == id;
+        });
     };
-    var setControl = function (player)
+
+    var createPlayer = function (playerInfo) {
+        var newPlayer = base.createObject();
+
+        newPlayer.type = gameTypes.player;
+        newPlayer.score = 0;
+        newPlayer.size = {width: 50, height: 50};
+
+
+        newPlayer.name = playerInfo.name;
+
+        createObject(newPlayer);
+        newPlayer.position = defaultCoords[newPlayer.id];
+
+        draw.player(newPlayer);
+        draw.score(newPlayer);
+
+        var setControl = function (player)
+        {
+            //продолжить работу надо здесь (отрисоку в draw, остальную логику можно тут оставить)
+            var apply = function () {
+                if (player.position.xCur < 500 && player.position.yCur < 500 && player.position.xCur >= 0 && player.position.yCur >= 0) {
+                    // draw.player(player);
+                }
+                else if (player.position.xCur >= 500) {
+                    player.position.xCur = 450;
+                }
+                else if (player.position.yCur >= 500) {
+                    player.position.yCur = 450;
+                }
+                else if (player.position.xCur < 0) {
+                    player.position.xCur = 0;
+                }
+                else if (player.position.yCur < 0) {
+                    player.position.yCur = 0;
+                }
+
+                draw.player(player);
+            };
+
+
+
+            var fire = function (fromX, fromY, toX, toY)
+            {
+                var position = {yCur: fromY, xCur: fromX};
+                var target = {y: toY, x: toX};
+
+                var bullet = createBullet({pid: player.id, position: position, target: target});
+                bullet.fire();
+            };
+
+            var control = {
+                fire: function () {
+                    var enemy = getEnemy(player.id);
+                    if (!enemy)
+                        return;
+
+                    var target = enemy.position;
+
+                    fire(player.position.xCur + player.size.width / 2, player.position.yCur + player.size.height / 2, target.xCur + enemy.size.width / 2, target.yCur + enemy.size.height / 2);
+                },
+                moveUp: function () {
+                    move(1);
+                },
+                moveDown: function () {
+                    move(2);
+                },
+                moveLeft: function () {
+                    move(3);
+                },
+                moveRight: function () {
+                    move(4);
+                }
+            };
+            var move = function (to) {
+                var enemy = getEnemy();
+
+                var target = enemy.position;
+
+                var position = player.position;
+
+//todo: fix this shit
+                switch (to) {
+                    case 1:
+                        position.yCur -= 50;
+                        if (position.xCur === target.xCur && position.yCur === target.y) {
+                            position.yCur += 50;
+                        }
+                        break;
+                    case 2:
+                        position.yCur += 50;
+                        if (position.xCur === target.xCur && position.yCur === target.y) {
+                            position.yCur -= 50;
+                        }
+                        break;
+                    case 3:
+                        position.xCur -= 50;
+                        if (position.xCur === target.xCur && position.yCur === target.y) {
+                            position.xCur += 50;
+                        }
+                        break;
+                    case 4:
+                        position.xCur += 50;
+                        if (position.xCur === target.xCur && position.yCur === target.y) {
+                            position.xCur -= 50;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                apply();
+            };
+
+            playerInfo.setControl(control)
+        };
+
+        setControl(newPlayer);
+
+        return newPlayer;
+    };
+
+    var createBullet = function (bulletInfo)
     {
-        var apply = function () {
-            if (position.x < 500 && position.y < 500 && position.x >= 0 && position.y >= 0) {
-                $('#player-' + player.id).css('top', position.y);
-                $('#player-' + player.id).css('left', position.x);
-            }
-            else if (position.x >= 500) {
-                position.x = 450;
-            }
-            else if (position.y >= 500) {
-                position.y = 450;
-            }
-            else if (position.x < 0) {
-                position.x = 0;
-            }
-            else if (position.y < 0) {
-                position.y = 0;
-            }
-        };
-        var getEnemy = function ()
-        {
-            return players.find(function (item) {
-                return item.id != player.id;
-            });
-        };
-        var fire = function (fromX, fromY, toX, toY)
-        {
-            var position = {y: fromY, x: fromX};
-            var bullet = $("<div />").addClass("bullet").attr('data-player', player.id)
-                    .css({top: position.y, left: position.x, 'background': colors[player.id]})
-                    .appendTo($('.battlefield'));
+        var bullet = base.createObject();
+        bullet.type = gameTypes.bullet;
+        bullet.pid = bulletInfo.pid;
+        bullet.position = bulletInfo.position;
+        bullet.target = bulletInfo.target;
+
+        bullet.size = {width: 10, height: 10};
+
+        createObject(bullet);
+
+        var interval;
+
+        bullet.fire = function () {
+            draw.bullet(bullet);
+
             var speed = 25;
-            var deltaX = (toX - fromX);
-            var deltaY = (toY - fromY);
+            var deltaX = (bullet.target.xCur - bullet.position.x);
+            var deltaY = (bullet.target.yCur - bullet.position.y);
             var long = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
             var k = 0;
             if (long != 0)
                 k = speed / long;
             var stepX = k * deltaX;
             var stepY = k * deltaY;
-            var interval = setInterval(function () {
-                position.x += stepX;
-                position.y += stepY;
-                bullet.css({top: position.y, left: position.x});
-                if (hitTest()) {
+
+            interval = setInterval(function () {
+                bullet.position.xCur += stepX;
+                bullet.position.yCur += stepY;
+
+                draw.bullet(bullet);
+
+                var enemy = getEnemy(bullet.pid);
+
+                if (bullet.hitTest(enemy)) {
                     killBullet();
+
+                    var player = getPlayer(bulletInfo.pid);
                     player.score++;
-                    $("#score-" + player.id).text(player.score);
+                    draw.score(player);
                 }
                 if (!checkBullet())
                     killBullet();
             }, 50);
-            var hitTest = function ()
-            {
-                var enemy = getEnemy();
-                if (!enemy)
-                    return;
-                var enemyPos = enemy.getPosition();
-                var deltaX = enemyPos.x - position.x;
-                var deltaY = enemyPos.y - position.y;
-                if ((deltaX >= -50 && deltaX <= 0) && (deltaY >= -50 && deltaY <= 0))
-                    return true;
+        };
+
+        var checkBullet = function ()
+        {
+            if (bullet.position.xCur >= 500 || bullet.position.xCur <= 0 || bullet.position.yCur >= 500 || bullet.position.yCur <= 0)
                 return false;
-            };
-            var checkBullet = function ()
-            {
-                if (position.x >= 500 || position.x <= 0 || position.y >= 500 || position.y <= 0)
-                    return false;
-                return true;
-            };
-            var killBullet = function () {
+
+            return true;
+        };
+        var killBullet = function () {
+            //todo: implement
+            if (interval)
                 clearInterval(interval);
-                bullet.remove();
-            };
-            console.log('from ', fromX, fromY, 'to ', toX, toY);
-        };
-        var position = {x: defaultcoords[player.id].x, y: defaultcoords[player.id].y};
-        player.getPosition = function () {
-            return position;
-        };
-        var control = {
-            fire: function () {
-                var enemy = getEnemy();
-                if (!enemy)
-                    return;
-                var target = enemy.getPosition();
-                fire(position.x + player.size / 2, position.y + player.size / 2, target.x + enemy.size / 2, target.y + enemy.size / 2);
-            },
-            moveUp: function () {
-                move(1);
-            },
-            moveDown: function () {
-                move(2);
-            },
-            moveLeft: function () {
-                move(3);
-            },
-            moveRight: function () {
-                move(4);
-            }
-        };
-        var move = function (to) {
-            var enemy = getEnemy();
-            if (!enemy)
-                return;
-            var target = enemy.getPosition();
 
-            switch (to) {
-                case 1:
-                    position.y -= 50;
-                    if (position.x === target.x && position.y === target.y) {
-                        position.y += 50;
-                    }
-                    break;
-                case 2:
-                    position.y += 50;
-                    if (position.x === target.x && position.y === target.y) {
-                        position.y -= 50;
-                    }
-                    break;
-                case 3:
-                    position.x -= 50;
-                    if (position.x === target.x && position.y === target.y) {
-                        position.x += 50;
-                    }
-                    break;
-                case 4:
-                    position.x += 50;
-                    if (position.x === target.x && position.y === target.y) {
-                        position.x -= 50;
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            apply();
+            draw.remove(bullet);
         };
-        player.setControl(control);
+
+        return bullet;
+    };
+
+    var setPlayer = function (playerInfo)
+    {
+        var player = createPlayer(playerInfo);
+
+        return player.id;
+    };
+
+    var getEnemy = function (id)
+    {
+        return gameObjects.find(function (item) {
+            return item.id !== id && item.type === gameTypes.player;
+        });
     };
 
     var core = {
