@@ -16,7 +16,7 @@ body{
     border-radius: 3px;
 }
 .bullet{
-    margin: -5px 0 0 -5px;
+    /*margin: -5px 0 0 -5px;*/
     position:absolute;
     background-color: #0f0;
 /*    width: 10px;
