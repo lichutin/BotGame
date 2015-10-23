@@ -27,7 +27,7 @@ body{
     display: block;
 }
 .battlefield{
-    position: absolute;
+    position: fixed;
     width: 500px;
     height: 500px;
     background: #fff;

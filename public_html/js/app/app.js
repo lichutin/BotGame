@@ -51,9 +51,9 @@ define('app', ['jquery', 'game/core'], function ($, core) {
     };
 
 
-    var player0 = {
+    var player1 = {
         bot: false,
-        name: "Yurii",
+        name: "Artik",
         control: {
             fire: 96,
             up: 38,
@@ -62,9 +62,9 @@ define('app', ['jquery', 'game/core'], function ($, core) {
             right: 39
         }
     };
-    var player1 = {
+    var player0 = {
         bot: false,
-        name: "Artik",
+        name: "Yurii",
         control: {
             fire: 32,
             up: 87,

@@ -19,8 +19,6 @@ define(['jquery'], function ($) {
     };
     var drawPlayer = function (player)
     {
-        //todo: сделать как у пули
-
         var obj = $('[data-id=' + player.id + ']');
         if (obj.length)
         {

@@ -14,14 +14,10 @@ define([], function () {
     };
 
     baseObject.prototype.hitTest = function (anotherObject) {
-        console.log('hit');
-        console.log(this);
-        console.log(anotherObject);
-        //по oходу, пока не работает
         var deltaX = anotherObject.position.xCur - this.position.xCur;
         var deltaY = anotherObject.position.yCur - this.position.yCur;
 
-        if ((deltaX >= -anotherObject.size.width && deltaX <= this.size.width) && (deltaY >= -anotherObject.size.height && deltaY <= this.size.height))
+        if ((deltaX > -anotherObject.size.width && deltaX < this.size.width) && (deltaY > -anotherObject.size.height && deltaY < this.size.height))
             return true;
 
         return false;

@@ -1,4 +1,4 @@
-define(['jquery', 'game/draw', 'game/base'], function (jq, draw, base) {
+define(['game/draw', 'game/base'], function (draw, base) {
     'use strict';
 
     var gameObjects = [];
@@ -6,6 +6,13 @@ define(['jquery', 'game/draw', 'game/base'], function (jq, draw, base) {
     var gameTypes = {
         player: 1,
         bullet: 2
+    };
+
+    var directions = {
+        up: 1,
+        down: 2,
+        left: 3,
+        right: 4
     };
 
     var defaultCoords = [
@@ -48,7 +55,8 @@ define(['jquery', 'game/draw', 'game/base'], function (jq, draw, base) {
         var setControl = function (player)
         {
             var apply = function () {
-                if (player.position.xCur < 500 && player.position.yCur < 500 && player.position.xCur >= 0 && player.position.yCur >= 0) {
+                if (player.position.xCur < 500 && player.position.yCur < 500 &&
+                        player.position.xCur >= 0 && player.position.yCur >= 0) {
                     // draw.player(player);
                 }
                 else if (player.position.xCur >= 500) {
@@ -86,62 +94,56 @@ define(['jquery', 'game/draw', 'game/base'], function (jq, draw, base) {
 
                     var target = enemy.position;
 
-                    fire(player.position.xCur + player.size.width / 2, player.position.yCur + player.size.height / 2, target.xCur + enemy.size.width / 2, target.yCur + enemy.size.height / 2);
+                    fire(player.position.xCur + player.size.width / 2,
+                            player.position.yCur + player.size.height / 2,
+                            target.xCur + enemy.size.width / 2,
+                            target.yCur + enemy.size.height / 2);
                 },
                 moveUp: function () {
-                    move(1);
+                    move(directions.up);
                 },
                 moveDown: function () {
-                    move(2);
+                    move(directions.down);
                 },
                 moveLeft: function () {
-                    move(3);
+                    move(directions.left);
                 },
                 moveRight: function () {
-                    move(4);
+                    move(directions.right);
                 }
             };
             var move = function (to) {
-                var enemy = getEnemy();
+                var enemy = getEnemy(player.id);
 
-                var target = enemy.position;
+                var playerShadow = cloneObject(player);
 
-                var position = player.position;
+                var position = playerShadow.position;
 
-//todo: fix this shit
                 switch (to) {
-                    case 1:
+                    case directions.up:
                         position.yCur -= 50;
-                        if (position.xCur === target.xCur && position.yCur === target.y) {
-                            position.yCur += 50;
-                        }
                         break;
-                    case 2:
+                    case directions.down:
                         position.yCur += 50;
-                        if (position.xCur === target.xCur && position.yCur === target.y) {
-                            position.yCur -= 50;
-                        }
                         break;
-                    case 3:
+                    case directions.left:
                         position.xCur -= 50;
-                        if (position.xCur === target.xCur && position.yCur === target.y) {
-                            position.xCur += 50;
-                        }
                         break;
-                    case 4:
+                    case directions.right:
                         position.xCur += 50;
-                        if (position.xCur === target.xCur && position.yCur === target.y) {
-                            position.xCur -= 50;
-                        }
                         break;
                     default:
                         break;
                 }
 
+                if (!enemy.hitTest(playerShadow)) {
+                    player.position = playerShadow.position;
+                }
+
                 apply();
             };
 
-            playerInfo.setControl(control)
+            playerInfo.setControl(control);
         };
 
         setControl(newPlayer);
@@ -166,7 +168,7 @@ define(['jquery', 'game/draw', 'game/base'], function (jq, draw, base) {
         bullet.fire = function () {
             draw.bullet(bullet);
 
-            var speed = 25;
+            var speed = 20;
             var deltaX = (bullet.target.xCur - bullet.position.xCur);
             var deltaY = (bullet.target.yCur - bullet.position.yCur);
             var long = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -198,7 +200,8 @@ define(['jquery', 'game/draw', 'game/base'], function (jq, draw, base) {
 
         var checkBullet = function ()
         {
-            if (bullet.position.xCur >= 500 || bullet.position.xCur <= 0 || bullet.position.yCur >= 500 || bullet.position.yCur <= 0)
+            if (bullet.position.xCur >= 500 || bullet.position.xCur <= 0 ||
+                    bullet.position.yCur >= 500 || bullet.position.yCur <= 0)
                 return false;
 
             return true;
@@ -219,6 +222,10 @@ define(['jquery', 'game/draw', 'game/base'], function (jq, draw, base) {
         var player = createPlayer(playerInfo);
 
         return player.id;
+    };
+
+    var cloneObject = function (obj) {
+        return JSON.parse(JSON.stringify(obj));
     };
 
     var getEnemy = function (id)
