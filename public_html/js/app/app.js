@@ -4,8 +4,13 @@ define('app', ['jquery', 'game/core'], function ($, core) {
 
 
     var addPlayer = function (info) {
+        var control;
+        var mover;
+        var shooter;
 
         var player = {name: info.name, setControl: function (control) {
+                control = control;
+
                 if (info.bot) {
 //                  ...
                 }
@@ -20,30 +25,34 @@ define('app', ['jquery', 'game/core'], function ($, core) {
 
                     var handle = function () {
                         if (keys[info.control.fire])
-                            control.fire();
+                            shooter = control.fire;
 
                         if (keys[info.control.left])
-                            control.moveLeft();
+                            mover = control.moveLeft;
 
                         if (keys[info.control.up])
-                            control.moveUp();
+                            mover = control.moveUp;
 
                         if (keys[info.control.right])
-                            control.moveRight();
+                            mover = control.moveRight;
 
                         if (keys[ info.control.down])
-                            control.moveDown();
+                            mover = control.moveDown;
                     };
 
                     $(document).on('keydown', function (e) {
                         var event = window.event ? window.event : e;
                         keys[event.keyCode] = true;
 
-
                         handle();
-
                     });
                 }
+            }, invokeNextAction: function () {
+                mover && mover();
+                mover = null;
+                
+                shooter && shooter();
+                shooter = null;
             }
         };
         var id = core.setPlayer(player);
@@ -76,6 +85,8 @@ define('app', ['jquery', 'game/core'], function ($, core) {
 
     addPlayer(player0);
     addPlayer(player1);
+
+    core.startGame();
 
     return app;
 });

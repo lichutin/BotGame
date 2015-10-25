@@ -32,7 +32,7 @@ define(['game/draw', 'game/base'], function (draw, base) {
     var getPlayer = function (id)
     {
         return gameObjects.find(function (item) {
-            return item.type === gameTypes.player && item.id == id;
+            return item.type === gameTypes.player && item.id === id;
         });
     };
 
@@ -148,6 +148,8 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
         setControl(newPlayer);
 
+        newPlayer.invokeNextAction = playerInfo.invokeNextAction;
+
         return newPlayer;
     };
 
@@ -178,7 +180,8 @@ define(['game/draw', 'game/base'], function (draw, base) {
             var stepX = k * deltaX;
             var stepY = k * deltaY;
 
-            interval = setInterval(function () {
+            var nextAction = function ()
+            {
                 bullet.position.xCur += stepX;
                 bullet.position.yCur += stepY;
 
@@ -195,8 +198,32 @@ define(['game/draw', 'game/base'], function (draw, base) {
                 }
                 if (!checkBullet())
                     killBullet();
-            }, 50);
+            };
+
+            bullet.invokeNextAction = function () {
+                nextAction();
+            };
+//            interval = setInterval(function () {
+//                bullet.position.xCur += stepX;
+//                bullet.position.yCur += stepY;
+//
+//                draw.bullet(bullet);
+//
+//                var enemy = getEnemy(bullet.pid);
+//
+//                if (bullet.hitTest(enemy)) {
+//                    killBullet();
+//
+//                    var player = getPlayer(bulletInfo.pid);
+//                    player.score++;
+//                    draw.score(player);
+//                }
+//                if (!checkBullet())
+//                    killBullet();
+//            }, 50);
         };
+
+
 
         var checkBullet = function ()
         {
@@ -206,6 +233,7 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
             return true;
         };
+
         var killBullet = function () {
             //todo: implement
             if (interval)
@@ -235,11 +263,28 @@ define(['game/draw', 'game/base'], function (draw, base) {
         });
     };
 
+    var startGame = function () {
+        var iteration = function () {
+            for (var i = 0; i < gameObjects.length; i++)
+            {
+                if (!gameObjects[i])
+                    continue;
+
+                //todo: подуматЬ ,как можно запретить выполнять за ход больше одного действия
+                //возможно, управление через контрол уже устарело
+                var action = gameObjects[i].invokeNextAction();
+//                action && action();
+            }
+
+            setTimeout(iteration, 100);
+        };
+
+        iteration();
+    };
+
     var core = {
         setPlayer: setPlayer,
-        startGame: function () {
-            return 'game started!';
-        }
+        startGame: startGame
     };
     return core;
 });
