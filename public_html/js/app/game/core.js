@@ -8,13 +8,6 @@ define(['game/draw', 'game/base'], function (draw, base) {
         bullet: 2
     };
 
-    var directions = {
-        up: 1,
-        down: 2,
-        left: 3,
-        right: 4
-    };
-
     var defaultCoords = [
         {xCur: 0, yCur: 0, xNext: 0, yNext: 0},
         {xCur: 450, yCur: 450, xNext: 0, yNext: 0},
@@ -52,27 +45,27 @@ define(['game/draw', 'game/base'], function (draw, base) {
         draw.player(newPlayer);
         draw.score(newPlayer);
 
-        var setControl = function (player)
+        var invokeAction = function (command)
         {
             var apply = function () {
-                if (player.position.xCur < 500 && player.position.yCur < 500 &&
-                        player.position.xCur >= 0 && player.position.yCur >= 0) {
+                if (newPlayer.position.xCur < 500 && newPlayer.position.yCur < 500 &&
+                        newPlayer.position.xCur >= 0 && newPlayer.position.yCur >= 0) {
                     // draw.player(player);
                 }
-                else if (player.position.xCur >= 500) {
-                    player.position.xCur = 450;
+                else if (newPlayer.position.xCur >= 500) {
+                    newPlayer.position.xCur = 450;
                 }
-                else if (player.position.yCur >= 500) {
-                    player.position.yCur = 450;
+                else if (newPlayer.position.yCur >= 500) {
+                    newPlayer.position.yCur = 450;
                 }
-                else if (player.position.xCur < 0) {
-                    player.position.xCur = 0;
+                else if (newPlayer.position.xCur < 0) {
+                    newPlayer.position.xCur = 0;
                 }
-                else if (player.position.yCur < 0) {
-                    player.position.yCur = 0;
+                else if (newPlayer.position.yCur < 0) {
+                    newPlayer.position.yCur = 0;
                 }
 
-                draw.player(player);
+                draw.player(newPlayer);
             };
 
 
@@ -82,54 +75,44 @@ define(['game/draw', 'game/base'], function (draw, base) {
                 var position = {yCur: fromY, xCur: fromX};
                 var target = {yCur: toY, xCur: toX};
 
-                var bullet = createBullet({pid: player.id, position: position, target: target});
+                var bullet = createBullet({pid: newPlayer.id, position: position, target: target});
                 bullet.fire();
             };
 
-            var control = {
-                fire: function () {
-                    var enemy = getEnemy(player.id);
-                    if (!enemy)
-                        return;
+            var preFire = function () {
 
-                    var target = enemy.position;
+                var enemy = getEnemy(newPlayer.id);
+                if (!enemy)
+                    return;
 
-                    fire(player.position.xCur + player.size.width / 2,
-                            player.position.yCur + player.size.height / 2,
-                            target.xCur + enemy.size.width / 2,
-                            target.yCur + enemy.size.height / 2);
-                },
-                moveUp: function () {
-                    move(directions.up);
-                },
-                moveDown: function () {
-                    move(directions.down);
-                },
-                moveLeft: function () {
-                    move(directions.left);
-                },
-                moveRight: function () {
-                    move(directions.right);
-                }
+                var target = enemy.position;
+
+                fire(newPlayer.position.xCur + newPlayer.size.width / 2,
+                        newPlayer.position.yCur + newPlayer.size.height / 2,
+                        target.xCur + enemy.size.width / 2,
+                        target.yCur + enemy.size.height / 2);
             };
-            var move = function (to) {
-                var enemy = getEnemy(player.id);
 
-                var playerShadow = cloneObject(player);
+
+
+            var move = function (command) {
+                var enemy = getEnemy(newPlayer.id);
+
+                var playerShadow = cloneObject(newPlayer);
 
                 var position = playerShadow.position;
 
-                switch (to) {
-                    case directions.up:
+                switch (command) {
+                    case actionTypes.moveUp:
                         position.yCur -= 50;
                         break;
-                    case directions.down:
+                    case actionTypes.moveDown:
                         position.yCur += 50;
                         break;
-                    case directions.left:
+                    case actionTypes.moveLeft:
                         position.xCur -= 50;
                         break;
-                    case directions.right:
+                    case actionTypes.moveRight:
                         position.xCur += 50;
                         break;
                     default:
@@ -137,18 +120,30 @@ define(['game/draw', 'game/base'], function (draw, base) {
                 }
 
                 if (!enemy.hitTest(playerShadow)) {
-                    player.position = playerShadow.position;
+                    newPlayer.position = playerShadow.position;
                 }
 
                 apply();
             };
 
-            playerInfo.setControl(control);
+
+            switch (command)
+            {
+                case actionTypes.fire:
+                    preFire();
+                    break;
+
+                default:
+                    move(command);
+            }
         };
 
-        setControl(newPlayer);
+        newPlayer.getNextAction = function () {
+            var command = playerInfo.getNextAction();
 
-        newPlayer.invokeNextAction = playerInfo.invokeNextAction;
+            if (command)
+                invokeAction(command);
+        };
 
         return newPlayer;
     };
@@ -200,27 +195,9 @@ define(['game/draw', 'game/base'], function (draw, base) {
                     killBullet();
             };
 
-            bullet.invokeNextAction = function () {
-                nextAction();
+            bullet.getNextAction = function () {
+                return nextAction;
             };
-//            interval = setInterval(function () {
-//                bullet.position.xCur += stepX;
-//                bullet.position.yCur += stepY;
-//
-//                draw.bullet(bullet);
-//
-//                var enemy = getEnemy(bullet.pid);
-//
-//                if (bullet.hitTest(enemy)) {
-//                    killBullet();
-//
-//                    var player = getPlayer(bulletInfo.pid);
-//                    player.score++;
-//                    draw.score(player);
-//                }
-//                if (!checkBullet())
-//                    killBullet();
-//            }, 50);
         };
 
 
@@ -263,28 +240,53 @@ define(['game/draw', 'game/base'], function (draw, base) {
         });
     };
 
+    var gameCycle;
+    var isGame;
+
     var startGame = function () {
+        if (isGame)
+            return;
+
         var iteration = function () {
+            if (!isGame)
+                return;
+
             for (var i = 0; i < gameObjects.length; i++)
             {
                 if (!gameObjects[i])
                     continue;
 
-                //todo: подуматЬ ,как можно запретить выполнять за ход больше одного действия
-                //возможно, управление через контрол уже устарело
-                var action = gameObjects[i].invokeNextAction();
-//                action && action();
+                var action = gameObjects[i].getNextAction();
+                action && action();
             }
 
             setTimeout(iteration, 100);
         };
 
+        isGame = true;
         iteration();
+    };
+
+    var stopGame = function () {
+        if (gameCycle)
+            clearTimeout(gameCycle);
+
+        isGame = false;
+    };
+
+    var actionTypes = {
+        'moveUp': 1,
+        'moveDown': 2,
+        'moveLeft': 3,
+        'moveRight': 4,
+        'fire': 5
     };
 
     var core = {
         setPlayer: setPlayer,
-        startGame: startGame
+        startGame: startGame,
+        stopGame: stopGame,
+        actionTypes: actionTypes
     };
     return core;
 });

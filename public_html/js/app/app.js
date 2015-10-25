@@ -1,58 +1,51 @@
 define('app', ['jquery', 'game/core'], function ($, core) {
     var app = {};
 
-
+    var actionTypes = core.actionTypes;
 
     var addPlayer = function (info) {
-        var control;
-        var mover;
-        var shooter;
+        var command;
 
-        var player = {name: info.name, setControl: function (control) {
-                control = control;
+        var setup = function () {
+            var keys = [];
 
-                if (info.bot) {
-//                  ...
-                }
-                else {
-                    var keys = [];
+            $(document).on('keyup', function (e) {
+                var event = window.event ? window.event : e;
+                keys[event.keyCode] = false;
+            });
 
+            var handle = function () {
+                if (keys[info.control.fire])
+                    command = actionTypes.fire;
 
-                    $(document).on('keyup', function (e) {
-                        var event = window.event ? window.event : e;
-                        keys[event.keyCode] = false;
-                    });
+                if (keys[info.control.left])
+                    command = actionTypes.moveLeft;
 
-                    var handle = function () {
-                        if (keys[info.control.fire])
-                            shooter = control.fire;
+                if (keys[info.control.up])
+                    command = actionTypes.moveUp;
 
-                        if (keys[info.control.left])
-                            mover = control.moveLeft;
+                if (keys[info.control.right])
+                    command = actionTypes.moveRight;
 
-                        if (keys[info.control.up])
-                            mover = control.moveUp;
+                if (keys[ info.control.down])
+                    command = actionTypes.moveDown;
 
-                        if (keys[info.control.right])
-                            mover = control.moveRight;
+            };
 
-                        if (keys[ info.control.down])
-                            mover = control.moveDown;
-                    };
+            $(document).on('keydown', function (e) {
+                var event = window.event ? window.event : e;
+                keys[event.keyCode] = true;
 
-                    $(document).on('keydown', function (e) {
-                        var event = window.event ? window.event : e;
-                        keys[event.keyCode] = true;
+                handle();
+            });
+        };
 
-                        handle();
-                    });
-                }
-            }, invokeNextAction: function () {
-                mover && mover();
-                mover = null;
-                
-                shooter && shooter();
-                shooter = null;
+        setup();
+
+        var player = {name: info.name, getNextAction: function () {
+                var res = command;
+                command = null;
+                return res;
             }
         };
         var id = core.setPlayer(player);
