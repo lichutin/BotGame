@@ -160,8 +160,6 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
         createObject(bullet);
 
-        var interval;
-
         bullet.fire = function () {
             draw.bullet(bullet);
 
@@ -212,10 +210,7 @@ define(['game/draw', 'game/base'], function (draw, base) {
         };
 
         var killBullet = function () {
-            //todo: implement
-            if (interval)
-                clearInterval(interval);
-
+            delete gameObjects[bullet.id];
             draw.remove(bullet);
         };
 
@@ -260,7 +255,7 @@ define(['game/draw', 'game/base'], function (draw, base) {
                 action && action();
             }
 
-            setTimeout(iteration, 100);
+            setTimeout(iteration, 50);
         };
 
         isGame = true;

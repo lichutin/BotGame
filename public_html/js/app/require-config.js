@@ -1,7 +1,9 @@
 require.config({
     baseUrl: "js/app",
     paths: {
-        'jquery': '../libs/jquery'
+        'jquery': '../libs/jquery',
+        'botYurii': 'bots/botYurii',
+        'botArtik': 'bots/botArtik'
     },
 });
 

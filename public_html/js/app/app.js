@@ -1,4 +1,4 @@
-define('app', ['jquery', 'game/core'], function ($, core) {
+define('app', ['jquery', 'game/core', 'botArtik', 'botYurii'], function ($, core, artik, yurii) {
     var app = {};
 
     var actionTypes = core.actionTypes;
@@ -76,8 +76,10 @@ define('app', ['jquery', 'game/core'], function ($, core) {
         }
     };
 
-    addPlayer(player0);
-    addPlayer(player1);
+//    addPlayer(player1);
+//    addPlayer(player0);
+    core.setPlayer(yurii);
+    core.setPlayer(artik);
 
     core.startGame();
 
