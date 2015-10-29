@@ -139,7 +139,8 @@ define(['game/draw', 'game/base'], function (draw, base) {
         };
 
         newPlayer.getNextAction = function (info) {
-            var command = playerInfo.getNextAction(info);
+            var self = cloneObject(newPlayer);
+            var command = playerInfo.getNextAction(info, self);
 
             if (command)
                 invokeAction(command);
@@ -243,8 +244,8 @@ define(['game/draw', 'game/base'], function (draw, base) {
     var getGameInfo = function () {
         var botEye = [];
         for (var i = 0; i < gameObjects.length; i++) {
-            if(!gameObjects[i])
-                    continue;
+            if (!gameObjects[i])
+                continue;
             var temp = cloneObject(gameObjects[i]);
             botEye.push(temp);
         }
@@ -261,9 +262,9 @@ define(['game/draw', 'game/base'], function (draw, base) {
         var iteration = function () {
             if (!isGame)
                 return;
-            
+
             var info = getGameInfo();
-            
+
             for (var i = 0; i < gameObjects.length; i++)
             {
                 if (!gameObjects[i])

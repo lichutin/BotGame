@@ -10,8 +10,9 @@ define(['game/core'], function (core) {
     };
 
     var player = {
-        getNextAction: function (info) {
-            console.log(info)
+        getNextAction: function (info, self) {
+            console.log('that`s me', self);
+            console.log('game objects', info);
             if (shot)
             {
                 shot = false;
