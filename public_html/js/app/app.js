@@ -80,6 +80,18 @@ define('app', ['jquery', 'game/core', 'botArtik', 'botYurii'], function ($, core
 //    addPlayer(player0);
     core.setPlayer(yurii);
     core.setPlayer(artik);
+   
+       $("#pause").click(function () {
+        if ($("#pause").attr("data-pause") === "0") {
+            core.stopGame();
+            $("#pause").attr("data-pause", "1").text("Play Game");
+        }
+        else {
+            $("#pause").attr("data-pause", "0").text("Pause");
+            core.startGame();
+        }
+    });
+
 
     core.startGame();
 

@@ -1,6 +1,5 @@
 define(['game/core'], function (core) {
     var shot = false;
-
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min)) + min;
     }
@@ -10,8 +9,9 @@ define(['game/core'], function (core) {
         return getRandomInt(1, 5);
     };
 
-    var yurii = {
-        getNextAction: function () {
+    var player = {
+        getNextAction: function (info) {
+            console.log(info)
             if (shot)
             {
                 shot = false;
@@ -43,6 +43,6 @@ define(['game/core'], function (core) {
         name: 'Artik'
     };
 
-    return yurii;
+    return player;
 });
 

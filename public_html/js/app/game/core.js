@@ -138,8 +138,8 @@ define(['game/draw', 'game/base'], function (draw, base) {
             }
         };
 
-        newPlayer.getNextAction = function () {
-            var command = playerInfo.getNextAction();
+        newPlayer.getNextAction = function (info) {
+            var command = playerInfo.getNextAction(info);
 
             if (command)
                 invokeAction(command);
@@ -225,7 +225,12 @@ define(['game/draw', 'game/base'], function (draw, base) {
     };
 
     var cloneObject = function (obj) {
-        return JSON.parse(JSON.stringify(obj));
+        if (obj) {
+            return JSON.parse(JSON.stringify(obj));
+        }
+        else {
+            return null;
+        }
     };
 
     var getEnemy = function (id)
@@ -233,6 +238,17 @@ define(['game/draw', 'game/base'], function (draw, base) {
         return gameObjects.find(function (item) {
             return item.id !== id && item.type === gameTypes.player;
         });
+    };
+
+    var getGameInfo = function () {
+        var botEye = [];
+        for (var i = 0; i < gameObjects.length; i++) {
+            if(!gameObjects[i])
+                    continue;
+            var temp = cloneObject(gameObjects[i]);
+            botEye.push(temp);
+        }
+        return botEye;
     };
 
     var gameCycle;
@@ -245,22 +261,27 @@ define(['game/draw', 'game/base'], function (draw, base) {
         var iteration = function () {
             if (!isGame)
                 return;
-
+            
+            var info = getGameInfo();
+            
             for (var i = 0; i < gameObjects.length; i++)
             {
                 if (!gameObjects[i])
                     continue;
 
-                var action = gameObjects[i].getNextAction();
+                var action = gameObjects[i].getNextAction(info);
                 action && action();
+
             }
 
-            setTimeout(iteration, 50);
+            setTimeout(iteration, 100);
+
         };
 
         isGame = true;
         iteration();
     };
+
 
     var stopGame = function () {
         if (gameCycle)
