@@ -303,7 +303,8 @@ define(['game/draw', 'game/base'], function (draw, base) {
         setPlayer: setPlayer,
         startGame: startGame,
         stopGame: stopGame,
-        actionTypes: actionTypes
+        actionTypes: actionTypes,
+        gameTypes: gameTypes
     };
     return core;
 });
