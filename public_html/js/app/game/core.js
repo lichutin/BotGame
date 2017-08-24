@@ -9,19 +9,21 @@ define(['game/draw', 'game/base'], function (draw, base) {
     };
 
     var defaultCoords = [
-        { xCur: 0, yCur: 0, xNext: 0, yNext: 0 },
-        { xCur: 450, yCur: 450, xNext: 0, yNext: 0 },
-        { xCur: 450, yCur: 0, xNext: 0, yNext: 0 },
-        { xCur: 0, yCur: 450, xNext: 0, yNext: 0 }
+        {xCur: 0, yCur: 0, xNext: 0, yNext: 0},
+        {xCur: 450, yCur: 450, xNext: 0, yNext: 0},
+        {xCur: 450, yCur: 0, xNext: 0, yNext: 0},
+        {xCur: 0, yCur: 450, xNext: 0, yNext: 0}
     ];
 
-    var createObject = function (obj) {
+    var createObject = function (obj)
+    {
         gameObjects.push(obj);
         obj.id = gameObjects.indexOf(obj);
         return obj.id;
     };
 
-    var getPlayer = function (id) {
+    var getPlayer = function (id)
+    {
         return gameObjects.find(function (item) {
             return item.type === gameTypes.player && item.id === id;
         });
@@ -32,7 +34,7 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
         newPlayer.type = gameTypes.player;
         newPlayer.score = 0;
-        newPlayer.size = { width: 50, height: 50 };
+        newPlayer.size = {width: 50, height: 50};
 
 
         newPlayer.name = playerInfo.name;
@@ -43,10 +45,11 @@ define(['game/draw', 'game/base'], function (draw, base) {
         draw.player(newPlayer);
         draw.score(newPlayer);
 
-        var invokeAction = function (command) {
+        var invokeAction = function (command)
+        {
             var apply = function () {
                 if (newPlayer.position.xCur < 500 && newPlayer.position.yCur < 500 &&
-                    newPlayer.position.xCur >= 0 && newPlayer.position.yCur >= 0) {
+                        newPlayer.position.xCur >= 0 && newPlayer.position.yCur >= 0) {
                     // draw.player(player);
                 }
                 else if (newPlayer.position.xCur >= 500) {
@@ -67,11 +70,12 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
 
 
-            var fire = function (fromX, fromY, toX, toY) {
-                var position = { yCur: fromY, xCur: fromX };
-                var target = { yCur: toY, xCur: toX };
+            var fire = function (fromX, fromY, toX, toY)
+            {
+                var position = {yCur: fromY, xCur: fromX};
+                var target = {yCur: toY, xCur: toX};
 
-                var bullet = createBullet({ pid: newPlayer.id, position: position, target: target });
+                var bullet = createBullet({pid: newPlayer.id, position: position, target: target});
                 bullet.fire();
             };
 
@@ -84,9 +88,9 @@ define(['game/draw', 'game/base'], function (draw, base) {
                 var target = enemy.position;
 
                 fire(newPlayer.position.xCur + newPlayer.size.width / 2,
-                    newPlayer.position.yCur + newPlayer.size.height / 2,
-                    target.xCur + enemy.size.width / 2,
-                    target.yCur + enemy.size.height / 2);
+                        newPlayer.position.yCur + newPlayer.size.height / 2,
+                        target.xCur + enemy.size.width / 2,
+                        target.yCur + enemy.size.height / 2);
             };
 
 
@@ -123,7 +127,8 @@ define(['game/draw', 'game/base'], function (draw, base) {
             };
 
 
-            switch (command) {
+            switch (command)
+            {
                 case actionTypes.fire:
                     preFire();
                     break;
@@ -144,14 +149,15 @@ define(['game/draw', 'game/base'], function (draw, base) {
         return newPlayer;
     };
 
-    var createBullet = function (bulletInfo) {
+    var createBullet = function (bulletInfo)
+    {
         var bullet = base.createObject();
         bullet.type = gameTypes.bullet;
         bullet.pid = bulletInfo.pid;
         bullet.position = bulletInfo.position;
         bullet.target = bulletInfo.target;
 
-        bullet.size = { width: 10, height: 10 };
+        bullet.size = {width: 10, height: 10};
 
         createObject(bullet);
 
@@ -168,7 +174,8 @@ define(['game/draw', 'game/base'], function (draw, base) {
             var stepX = k * deltaX;
             var stepY = k * deltaY;
 
-            var nextAction = function () {
+            var nextAction = function ()
+            {
                 bullet.position.xCur += stepX;
                 bullet.position.yCur += stepY;
 
@@ -194,9 +201,10 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
 
 
-        var checkBullet = function () {
+        var checkBullet = function ()
+        {
             if (bullet.position.xCur >= 500 || bullet.position.xCur <= 0 ||
-                bullet.position.yCur >= 500 || bullet.position.yCur <= 0)
+                    bullet.position.yCur >= 500 || bullet.position.yCur <= 0)
                 return false;
 
             return true;
@@ -210,7 +218,8 @@ define(['game/draw', 'game/base'], function (draw, base) {
         return bullet;
     };
 
-    var setPlayer = function (playerInfo) {
+    var setPlayer = function (playerInfo)
+    {
         var player = createPlayer(playerInfo);
 
         return player.id;
@@ -225,7 +234,8 @@ define(['game/draw', 'game/base'], function (draw, base) {
         }
     };
 
-    var getEnemy = function (id) {
+    var getEnemy = function (id)
+    {
         return gameObjects.find(function (item) {
             return item.id !== id && item.type === gameTypes.player;
         });
@@ -255,7 +265,8 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
             var info = getGameInfo();
 
-            for (var i = 0; i < gameObjects.length; i++) {
+            for (var i = 0; i < gameObjects.length; i++)
+            {
                 if (!gameObjects[i])
                     continue;
 
@@ -287,10 +298,12 @@ define(['game/draw', 'game/base'], function (draw, base) {
         'moveRight': 4,
         'fire': 5
     };
-    setInterval(function () {
+
+     setInterval(function () {
         // Не буь пидорасом, не подсматривай.
         debugger;
     })
+    
     var core = {
         setPlayer: setPlayer,
         startGame: startGame,
