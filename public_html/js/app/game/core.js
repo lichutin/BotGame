@@ -8,12 +8,28 @@ define(['game/draw', 'game/base'], function (draw, base) {
         bullet: 2
     };
 
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
     var defaultCoords = [
-        {xCur: 0, yCur: 0, xNext: 0, yNext: 0},
-        {xCur: 450, yCur: 450, xNext: 0, yNext: 0},
-        {xCur: 450, yCur: 0, xNext: 0, yNext: 0},
-        {xCur: 0, yCur: 450, xNext: 0, yNext: 0}
+        {xCur: 0, yCur: 0},
+        {xCur: 450, yCur: 450},
+        {xCur: 450, yCur: 0},
+        {xCur: 0, yCur: 450}
     ];
+
+    var _useRandomStartPosition =true;
+    var getNewPlayerPosition = function(id){
+        if(!_useRandomStartPosition){
+            return defaultCoords[id];
+        }
+        
+        var x = getRandomInt(0, 9) * 50;//from 0 to 450 with 50px step;
+        var y = getRandomInt(0, 9) * 50;
+
+        return {xCur: x, yCur: y};
+    };
 
     var createObject = function (obj)
     {
@@ -40,8 +56,12 @@ define(['game/draw', 'game/base'], function (draw, base) {
         newPlayer.name = playerInfo.name;
 
         createObject(newPlayer);
-        newPlayer.position = defaultCoords[newPlayer.id];
 
+        do{
+            //make sure that all players will have different positions
+            newPlayer.position = getNewPlayerPosition(newPlayer.id);
+        } while(gameObjects.find(obj => obj.id !== newPlayer.id && obj.position.xCur === newPlayer.position.xCur && obj.position.yCur === newPlayer.position.yCur))
+        
         draw.player(newPlayer);
         draw.score(newPlayer);
 
@@ -67,8 +87,6 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
                 draw.player(newPlayer);
             };
-
-
 
             var fire = function (fromX, fromY, toX, toY)
             {
