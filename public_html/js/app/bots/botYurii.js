@@ -11,13 +11,14 @@ define(['game/core'], function (core) {
     };
 
     var _limits = {
-        xMax: 450,
-        yMax: 450,
+        xMax: 500,
+        yMax: 500,
         xMin: 0,
         yMin: 0
     };
     var _bulletSpeed = 20;//todo: improve core to give that info
     var _bulletSize = 10;
+    var _moveStep = 50;
 
     var _me;
     var _enemy;
@@ -140,6 +141,36 @@ define(['game/core'], function (core) {
         };
     };
 
+    var canMove = function(moveType){
+        var xMin = _me.position.xCur;
+        var yMin = _me.position.yCur;
+
+        switch(moveType){
+            case core.actionTypes.moveDown:
+            yMin += _moveStep;
+            break;
+
+            case core.actionTypes.moveRight:
+            xMin += _moveStep;
+            break;
+
+            case core.actionTypes.moveUp:
+            yMin -= _moveStep;
+            break;
+
+            case core.actionTypes.moveLeft:
+            xMin -= _moveStep;
+            break;
+        }
+
+        var yMax = yMin + _me.size.height;
+        var xMax = xMin + _me.size.width;
+
+        var isMovingAvailalbe = isPossibleCoordinates(xMax, xMin, yMax, yMin);
+        return isMovingAvailalbe;
+    };
+
+
     var getSafestDirection = function(){
         if(isDangerDistanceToEnemy()){
             //look at angle of vector from us to enemy
@@ -151,19 +182,29 @@ define(['game/core'], function (core) {
             var angle225 = 225;
             var angle315 = 315;
 
+            var allDirections = [core.actionTypes.moveDown, core.actionTypes.moveRight, core.actionTypes.moveUp, core.actionTypes.moveLeft];
+            var runOutDirection = null;
             //todo: handle when we can not move here
             if(angle >= angle45 && angle < angle135){
-                return core.actionTypes.moveDown;
+                runOutDirection = core.actionTypes.moveDown;
             } else if(angle >= angle135 && angle < angle225){
-                return core.actionTypes.moveRight;
+                runOutDirection = core.actionTypes.moveRight;
             } else if(angle >= angle225 && angle < angle315){
-                return core.actionTypes.moveUp;
+                runOutDirection = core.actionTypes.moveUp;
             } else if(angle >= angle315 || angle < angle45){
-                return core.actionTypes.moveLeft;
+                runOutDirection = core.actionTypes.moveLeft;
             }
+
+            var canRunOut = canMove(runOutDirection);
+            if(canRunOut){
+                return runOutDirection;
+            }
+
+            var rndIndex = getRandomInt(0, 4);
+            var rndDirection = allDirections[rndIndex];
+            return rndDirection;
         }
 
-        
         var nextBulletsPositions = _enemyBullets.map(bullet => getNextObjectPosition(bullet));
         //todo: also if bullet is going to hit us - we have to go left/right, not just back
         
@@ -194,6 +235,8 @@ define(['game/core'], function (core) {
         }
 
         if(safestDirection.count === stayDirection.count){
+            //todo: it will cause loosing in such situation: http://take.ms/b70tx (green player). 
+            //Bullet will cause hit at any direction, but if we stay here - all next bullets will hit us too
             return stayDirection.command;
         }
 
@@ -215,8 +258,7 @@ define(['game/core'], function (core) {
                 count: 0
             };
 
-            var isDirectionValid = direction.xMax <= _limits.xMax && direction.xMin >= _limits.xMin
-                && direction.yMax <= _limits.yMax && direction.yMin >= _limits.yMin;
+            var isDirectionValid = isPossibleCoordinates(direction.xMax, direction.xMin, direction.yMax, direction.yMin);
             
             if(isDirectionValid){
                 directions.push(direction);
@@ -230,6 +272,11 @@ define(['game/core'], function (core) {
         add(null, _me.position.xCur, _me.position.yCur);
 
         return directions;
+    };
+
+    var isPossibleCoordinates = function(xMax, xMin, yMax, yMin){
+        return xMax <= _limits.xMax && xMin >= _limits.xMin
+                && yMax <= _limits.yMax && yMin >= _limits.yMin;
     };
 
     var $in = function(start, end, value){
