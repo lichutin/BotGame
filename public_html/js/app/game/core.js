@@ -299,6 +299,11 @@ define(['game/draw', 'game/base'], function (draw, base) {
         'fire': 5
     };
 
+     setInterval(function () {
+        // Не буь пидорасом, не подсматривай.
+        debugger;
+    })
+    
     var core = {
         setPlayer: setPlayer,
         startGame: startGame,

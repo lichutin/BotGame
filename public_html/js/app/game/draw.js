@@ -1,6 +1,6 @@
 define(['jquery'], function ($) {
     'use strict';
-    var colors = ["#f00", "#0f0", "#00f", "#fa0"];
+    var colors = ["#711", "#367", "#00f", "#fa0"];
 
     var drawScore = function (player)
     {

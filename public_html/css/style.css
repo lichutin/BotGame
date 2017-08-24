@@ -6,12 +6,13 @@ body{
 }
 .gamer{
     position:absolute;
-    background-color: #f00;
+    background-color: #333;
+    color:#fff;
     top: 0px;
     left: 0px;
     text-align: center;
     padding: 15px 0;
-    border-radius: 3px;
+    border-radius: 6px;
     z-index: 4;
 }
 .bullet{
