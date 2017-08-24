@@ -4,7 +4,8 @@ require.config({
         'jquery': '../libs/jquery',
         '_':'../libs/lodash.core',
         'botYurii': 'bots/botYurii',
-        'botArtik': 'bots/botArtik'
+        'botArtik': 'bots/botArtik',
+        'botRandom': 'bots/botRandom'
     },
 });
 

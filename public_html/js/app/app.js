@@ -1,4 +1,4 @@
-define('app', ['jquery', 'game/core', 'botArtik', 'botYurii'], function ($, core, artik, yurii) {
+define('app', ['jquery', 'game/core', 'botArtik', 'botYurii', 'botRandom'], function ($, core, artik, yurii, botRandom) {
     var app = {};
 
     var actionTypes = core.actionTypes;
@@ -80,6 +80,7 @@ define('app', ['jquery', 'game/core', 'botArtik', 'botYurii'], function ($, core
 //    addPlayer(player0);
     core.setPlayer(yurii);
     core.setPlayer(artik);
+    //core.setPlayer(botRandom);
    
        $("#pause").click(function () {
         if ($("#pause").attr("data-pause") === "") {
