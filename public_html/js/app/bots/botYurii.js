@@ -109,7 +109,13 @@ define(['game/core'], function (core) {
         return length;
     };
 
-    var getNextObjectPosition = function(gameObject){
+    //stepOffset - allows to get next position after given period of steps.
+    //by default stepOffset = 1 (returns position for next step)
+    var getNextObjectPosition = function(gameObject, stepOffset){
+        if(!stepOffset){
+            stepOffset = 1;
+        }
+
         if(gameObject.type !== core.gameTypes.bullet){
             throw new Exception("not implemented");
         }
@@ -132,8 +138,8 @@ define(['game/core'], function (core) {
             k = speed / long; 
         } 
             
-        var stepX = k * deltaX; 
-        var stepY = k * deltaY;
+        var stepX = (k * deltaX) * stepOffset; 
+        var stepY = (k * deltaY) * stepOffset;
 
         return {
             x: bullet.position.xCur + stepX,
@@ -166,6 +172,7 @@ define(['game/core'], function (core) {
         var yMax = yMin + _me.size.height;
         var xMax = xMin + _me.size.width;
 
+        //todo: also check coordinates with other players etc.
         var isMovingAvailalbe = isPossibleCoordinates(xMax, xMin, yMax, yMin);
         return isMovingAvailalbe;
     };
@@ -195,23 +202,25 @@ define(['game/core'], function (core) {
                 runOutDirection = core.actionTypes.moveLeft;
             }
 
-            var canRunOut = canMove(runOutDirection);
-            if(canRunOut){
-                return runOutDirection;
+            //if can't move there - get random direction
+            while(!canMove(runOutDirection)){
+                var rndIndex = getRandomInt(0, 4);
+                var runOutDirection = allDirections[rndIndex];
             }
 
-            var rndIndex = getRandomInt(0, 4);
-            var rndDirection = allDirections[rndIndex];
-            return rndDirection;
+            return runOutDirection;
         }
 
         var nextBulletsPositions = _enemyBullets.map(bullet => getNextObjectPosition(bullet));
-        //todo: also if bullet is going to hit us - we have to go left/right, not just back
+        _enemyBullets.forEach(bullet => {
+            //we use prediction for two game cycles
+            nextBulletsPositions.push(getNextObjectPosition(bullet));
+            nextBulletsPositions.push(getNextObjectPosition(bullet, 2));
+        });
         
         var directions = getPossibleDirectionsForDodge();
 
         nextBulletsPositions.forEach(position => {
-            //todo: use bullet size to get potential hit tests
             var foundDirections = directions.filter(dir => 
                 ($in(dir.xMin, dir.xMax, position.x) || $in(dir.xMin, dir.xMax, position.x + _bulletSize)) && 
                 ($in(dir.yMin, dir.yMax, position.y) || $in(dir.yMin, dir.yMax, position.y + _bulletSize)))

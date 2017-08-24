@@ -298,11 +298,6 @@ define(['game/draw', 'game/base'], function (draw, base) {
         'moveRight': 4,
         'fire': 5
     };
-
-     setInterval(function () {
-        // Не буь пидорасом, не подсматривай.
-        debugger;
-    })
     
     var core = {
         setPlayer: setPlayer,
