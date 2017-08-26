@@ -15,6 +15,12 @@ define(['jquery'], function ($) {
             var label = $("<label />").text(player.score);
             score.append(label);
             $(".score-table").append(score);
+
+			var health = $("<div />").addClass("health").attr("data-player", player.id);
+			var indicator = $("<div />").addClass("value")
+				.css({'width': 100 - 23+'%', 'background': colors[player.id]}).text(player.name);
+			health.append(indicator);
+			$(".health-status").append(health);
         }
     };
     var drawPlayer = function (player)

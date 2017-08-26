@@ -1,52 +1,77 @@
-*{
+* {
     box-sizing: border-box;
 }
-body{
+
+body {
     background: #dedede;
 }
-.gamer{
-    position:absolute;
+
+.gamer {
+    position: absolute;
     background-color: #333;
-    color:#fff;
-    top: 0px;
-    left: 0px;
+    color: #fff;
+    top: 0;
+    left: 0;
     text-align: center;
     padding: 15px 0;
     border-radius: 6px;
     z-index: 4;
-    transition: all 90ms linear;
+    transition: all 100ms linear;
     will-change: background-color, top, left;
 }
-.bullet{
-    position:absolute;
+
+.bullet {
+    position: absolute;
     background-color: #0f0;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     border-radius: 50%;
     display: block;
-    transition: all 90ms linear;
+    transition: all 100ms linear;
     will-change: background-color, top, left;
     opacity: .7;
 }
-.battlefield{
+
+.battlefield {
     position: fixed;
     width: 500px;
     height: 500px;
     background: #fff;
-    top:50%;
-    left:50%;
+    top: 50%;
+    left: 50%;
     margin: -250px 0 0 -250px;
     border-radius: 3px;
-    box-shadow: 0px 15px 50px -5px rgba(0,0,0,0.3);
+    box-shadow: 0 15px 50px -5px rgba(0, 0, 0, 0.3);
 }
-.score-table{
+
+.score-table {
     position: absolute;
     width: 130px;
     height: 100%;
-    top:0px;
-    left:100%;
+    top: 0;
+    left: 100%;
     padding: 15px;
 }
-.score-table .score{
+
+.score-table .score {
     display: block;
+}
+
+.health-status {
+    position: absolute;
+    width: 100%;
+    top: 100%;
+    left: 0;
+    margin-top: 15px;
+}
+
+.health-status .health {
+    width: 50%;
+    float: left;
+}
+
+.health-status .health .value {
+    color: #fff;
+    font-size: 16px;
+    padding: 3px 5px;
 }

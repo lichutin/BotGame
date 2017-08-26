@@ -6,6 +6,8 @@ define(['game/core', '_'], function(core, _) {
 		_enemy,
 		_direction = 1;
 
+	// сделать возможность определения координаты пули на следующий ход
+
 	var hitTest = function(x1, y1, size1, x2, y2, size2) {
 		return ((x1 + size1 >= x2) && (x1 <= x2 + size2) && (y1 + size1 >= y2) && (y1 <= y2 + size2));
 	};
@@ -70,7 +72,7 @@ define(['game/core', '_'], function(core, _) {
 	var damageForMove = function(xCur, yCur) {
 		var moves = [];
 		var positions = sortingPositions(xCur, yCur);
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < positions.length; i++) {
 			moves.push(
 				{
 					move: positions[i].move,
