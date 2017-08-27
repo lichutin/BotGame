@@ -4,6 +4,8 @@
 
 body {
     background: #dedede;
+    min-width: 600px;
+    min-height: 600px;
 }
 
 body.animated .bullet,
