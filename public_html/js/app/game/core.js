@@ -24,7 +24,7 @@ define(['game/draw', 'game/base'], function (draw, base) {
         if(!_useRandomStartPosition){
             return defaultCoords[id];
         }
-        
+
         var x = getRandomInt(0, 9) * 50;//from 0 to 450 with 50px step;
         var y = getRandomInt(0, 9) * 50;
 
@@ -61,7 +61,7 @@ define(['game/draw', 'game/base'], function (draw, base) {
             //make sure that all players will have different positions
             newPlayer.position = getNewPlayerPosition(newPlayer.id);
         } while(gameObjects.find(obj => obj.id !== newPlayer.id && obj.position.xCur === newPlayer.position.xCur && obj.position.yCur === newPlayer.position.yCur))
-        
+
         draw.player(newPlayer);
         draw.score(newPlayer);
 
@@ -182,7 +182,7 @@ define(['game/draw', 'game/base'], function (draw, base) {
         bullet.fire = function () {
             draw.bullet(bullet);
 
-            var speed = 20;
+            var speed = 25;
             var deltaX = (bullet.target.xCur - bullet.position.xCur);
             var deltaY = (bullet.target.yCur - bullet.position.yCur);
             var long = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
@@ -272,12 +272,19 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
     var gameCycle;
     var isGame;
-
-    var startGame = function () {
-        if (isGame)
-            return;
+var iterationTime = {
+	count:0,
+	time:0
+};
+window.speed = function() {
+	return(iterationTime.time/iterationTime.count)
+}
+    var startGame = function (frequency) {
+        if (isGame || !frequency){
+            return;}
 
         var iteration = function () {
+			var timeStart = Date.now();
             if (!isGame)
                 return;
 
@@ -292,8 +299,9 @@ define(['game/draw', 'game/base'], function (draw, base) {
                 action && action();
 
             }
-
-            setTimeout(iteration, 100);
+			iterationTime.count++;
+            iterationTime.time += (Date.now()-timeStart);
+            setTimeout(iteration, frequency);
 
         };
 
@@ -316,7 +324,7 @@ define(['game/draw', 'game/base'], function (draw, base) {
         'moveRight': 4,
         'fire': 5
     };
-    
+
     var core = {
         setPlayer: setPlayer,
         startGame: startGame,

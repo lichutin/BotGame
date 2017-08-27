@@ -6,6 +6,12 @@ body {
     background: #dedede;
 }
 
+body.animated .bullet,
+body.animated .gamer {
+    transition: all 100ms linear;
+    will-change: background-color, top, left;
+}
+
 .gamer {
     position: absolute;
     background-color: #333;
@@ -16,8 +22,6 @@ body {
     padding: 15px 0;
     border-radius: 6px;
     z-index: 4;
-    transition: all 100ms linear;
-    will-change: background-color, top, left;
 }
 
 .bullet {
@@ -27,8 +31,6 @@ body {
     left: 0;
     border-radius: 50%;
     display: block;
-    transition: all 100ms linear;
-    will-change: background-color, top, left;
     opacity: .7;
 }
 
@@ -66,8 +68,18 @@ body {
 }
 
 .health-status .health {
-    width: 50%;
+    width: 48%;
     float: left;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.health-status .health:nth-child(odd) {
+    margin-right: 2%;
+}
+
+.health-status .health:nth-child(even) {
+    margin-left: 2%;
 }
 
 .health-status .health .value {

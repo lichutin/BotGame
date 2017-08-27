@@ -1,6 +1,12 @@
 define(['jquery'], function ($) {
     'use strict';
-    var colors = ["#711", "#367", "#00f", "#fa0"];
+
+	var defaultBias = Math.floor(Math.random()*360),
+		colorBias = 125;
+
+    var color = function(id) {
+		return 'hsl(' + defaultBias + id * colorBias + ',60%,60%)'
+	};
 
     var drawScore = function (player)
     {
@@ -16,9 +22,10 @@ define(['jquery'], function ($) {
             score.append(label);
             $(".score-table").append(score);
 
-			var health = $("<div />").addClass("health").attr("data-player", player.id);
+			var health = $("<div />").addClass("health").attr("data-player", player.id)
+				.css({'border-color': color(player.id)});
 			var indicator = $("<div />").addClass("value")
-				.css({'width': 100 - 23+'%', 'background': colors[player.id]}).text(player.name);
+				.css({'width': 100 - 23+'%', 'background': color(player.id)}).text(player.name);
 			health.append(indicator);
 			$(".health-status").append(health);
         }
@@ -33,7 +40,7 @@ define(['jquery'], function ($) {
         else {
             var newObj = $("<div />").addClass("gamer").text(player.name)
                     .css({
-                        "background": colors[player.id],
+                        "background": color(player.id),
                         width: player.size.width + 'px',
                         height: player.size.height+ 'px'
                     });
@@ -51,7 +58,7 @@ define(['jquery'], function ($) {
         {
             var newObj = $("<div />").addClass("bullet").attr('data-player', bullet.pid)
                     .css({
-                        'background': colors[bullet.pid],
+                        'background': color(bullet.pid),
                         width: bullet.size.width+ 'px',
                         height: bullet.size.height+ 'px'
                     });
