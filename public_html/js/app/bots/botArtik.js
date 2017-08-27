@@ -9,15 +9,10 @@ define(['game/core', '_'], function(core, _) {
 		_shotSpeed = 25,
 		_shots = {};
 
-	// сделать возможность определения координаты пули на следующий ход
-
 	var hitTest = function(x1, y1, size1, x2, y2, size2) {
-		// return ((x1 + size1 >= x2) && (x1 <= x2 + size2) && (y1 + size1 >= y2) && (y1 <= y2 + size2));
 		var deltaX = x2 - x1;
 		var deltaY = y2 - y1;
-
 		return ((deltaX > -size2 && deltaX < size1) && (deltaY > -size2 && deltaY < size1))
-
 	};
 
 	var canIMove = function(nextStep) {
@@ -194,7 +189,6 @@ define(['game/core', '_'], function(core, _) {
 					return core.actionTypes.fire;
 				}
 			}
-
 
 			var dfm = damageForMove(_self.position.xCur, _self.position.yCur);
 

@@ -1,11 +1,25 @@
 define(['jquery'], function ($) {
     'use strict';
 
-	var defaultBias = Math.floor(Math.random()*360),
-		colorBias = 125;
+	var defaultBias = Math.floor(Math.random()*200),
+		colorBias = 100+Math.floor(Math.random()*50);
 
     var color = function(id) {
-		return 'hsl(' + defaultBias + id * colorBias + ',60%,60%)'
+		return 'hsl(' + (defaultBias + id * colorBias) + ',60%,60%)'
+	};
+
+    var drawHealth = function(player){
+		var i = $('.health[data-player=' + player.id + '] .value');
+		if (i.length){
+			i.css('width', player.health+'%');
+		} else {
+			var health = $("<div />").addClass("health").attr("data-player", player.id)
+				.css({'border-color': color(player.id)});
+			var indicator = $("<div />").addClass("value")
+				.css({'width': '100%', 'background-color': color(player.id)}).text(player.name);
+			health.append(indicator);
+			$(".health-status").append(health);
+		}
 	};
 
     var drawScore = function (player)
@@ -21,13 +35,6 @@ define(['jquery'], function ($) {
             var label = $("<label />").text(player.score);
             score.append(label);
             $(".score-table").append(score);
-
-			var health = $("<div />").addClass("health").attr("data-player", player.id)
-				.css({'border-color': color(player.id)});
-			var indicator = $("<div />").addClass("value")
-				.css({'width': 100 - 23+'%', 'background': color(player.id)}).text(player.name);
-			health.append(indicator);
-			$(".health-status").append(health);
         }
     };
     var drawPlayer = function (player)
@@ -40,7 +47,7 @@ define(['jquery'], function ($) {
         else {
             var newObj = $("<div />").addClass("gamer").text(player.name)
                     .css({
-                        "background": color(player.id),
+                        "background-color": color(player.id),
                         width: player.size.width + 'px',
                         height: player.size.height+ 'px'
                     });
@@ -58,7 +65,7 @@ define(['jquery'], function ($) {
         {
             var newObj = $("<div />").addClass("bullet").attr('data-player', bullet.pid)
                     .css({
-                        'background': color(bullet.pid),
+                        'background-color': color(bullet.pid),
                         width: bullet.size.width+ 'px',
                         height: bullet.size.height+ 'px'
                     });
@@ -82,10 +89,16 @@ define(['jquery'], function ($) {
     {
         $('[data-id=' + id + ']').remove();
     };
+    var drawWin=function(winner) {
+    	var winText = $('<div/>').addClass('win').text('Winner — '+winner.name).css('background-color',color(winner.id));
+		$('.battlefield').empty().append(winText)
+	};
     return{
         player: drawPlayer,
         bullet: drawBullet,
         score: drawScore,
+        health: drawHealth,
+		win:drawWin,
         remove: remove
     };
 });

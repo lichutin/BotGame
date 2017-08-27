@@ -50,6 +50,7 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
         newPlayer.type = gameTypes.player;
         newPlayer.score = 0;
+        newPlayer.health = 100;
         newPlayer.size = {width: 50, height: 50};
 
 
@@ -64,6 +65,7 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
         draw.player(newPlayer);
         draw.score(newPlayer);
+		draw.health(newPlayer);
 
         var invokeAction = function (command)
         {
@@ -206,7 +208,13 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
                     var player = getPlayer(bulletInfo.pid);
                     player.score++;
+                    enemy.health--;
                     draw.score(player);
+                    draw.health(enemy);
+                    if(enemy.health===0){
+						stopGame();
+                        draw.win(player)
+                    }
                 }
                 if (!checkBullet())
                     killBullet();
@@ -272,19 +280,12 @@ define(['game/draw', 'game/base'], function (draw, base) {
 
     var gameCycle;
     var isGame;
-var iterationTime = {
-	count:0,
-	time:0
-};
-window.speed = function() {
-	return(iterationTime.time/iterationTime.count)
-}
+
     var startGame = function (frequency) {
         if (isGame || !frequency){
             return;}
 
         var iteration = function () {
-			var timeStart = Date.now();
             if (!isGame)
                 return;
 
@@ -299,8 +300,6 @@ window.speed = function() {
                 action && action();
 
             }
-			iterationTime.count++;
-            iterationTime.time += (Date.now()-timeStart);
             setTimeout(iteration, frequency);
 
         };

@@ -81,9 +81,9 @@ define('app', ['jquery', 'game/core', 'botArtik', 'botYurii', 'botRandom'], func
 //    addPlayer(player0);
 	core.setPlayer(yurii);
 	core.setPlayer(artik);
-	//core.setPlayer(botRandom);
+	// core.setPlayer(botRandom);
 
-	var frequency = 1;
+	var frequency = 100;
 
 	if (frequency >= 100) {
 		$('body').addClass('animated');
